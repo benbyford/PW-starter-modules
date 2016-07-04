@@ -1,0 +1,69 @@
+<?php
+/**
+ * RedirectAdminPages (0.0.1)
+ * RedirectAdminPages Redirect specific user role to custom page.
+ *
+ * @author Ben Byford
+ *
+ * ProcessWire 2.x
+ * Copyright (C) 2011 by Ryan Cramer
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ *
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class RedirectAdminPages extends WireData implements Module {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => "Redirect Login Page",
+			'version' => "0.0.1",
+			'summary' => "Redirect specific user role to custom page",
+			'author' => "Ben Byford",
+			'href' => "https://github.com/benbyford/PW-starter-modules",
+			'icon' => "user",
+
+			// use autoload if module is to be called each load, if it is only needed to setup something set to false
+			'autoload' => true,
+			'singular' => false,
+
+			'requires' => "ProcessWire>=2.5",
+		);
+	}
+
+	// called only if this is a autoload module
+	public function ready(){
+		$this->addHookBefore("PageRender::renderPage", $this, "renderPageRedirect");
+	}
+
+	public function init() {
+
+	}
+
+	public function ___renderPageRedirect($event) {
+
+		//  check to see if admin page
+		if($this->page->template == "admin"){
+
+			$redirect = false;
+
+			// find roles set in module configuration
+			$roles = explode(',', $this->userRoles);
+			foreach ($roles as $key => $val) {
+				$roles[$key] = trim($roles[$key]);
+
+				if($this->user->hasRole($roles[$key])){
+					$redirect = true;
+					break;
+				}
+			}
+
+			// if role needs redirecting then redirect session
+			if($redirect){
+				$this->session->redirect($this->redirectPage);
+			}
+		}
+	}
+}
