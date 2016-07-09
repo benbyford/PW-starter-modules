@@ -8,4 +8,4 @@
 - **RedirectAdminPages** - redirect specific user role to a custom page set in the module config.
     - This module shows how to implement module configuration,
     - using variables saved in the admin,
-    - redirecting a user using session->redirect
+    - redirecting a user using `session->redirect()`

@@ -1,0 +1,114 @@
+<?php
+/**
+ * HotUserSwap (0.0.1)
+ * HotUserSwap allows quick swap between users in the site front end
+ *
+ * @author Ben Byford
+ *
+ * ProcessWire 2.x
+ * Copyright (C) 2011 by Ryan Cramer
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ *
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class HotUserSwap extends WireData implements Module {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => "HotUserSwap",
+			'version' => "0.0.1",
+			'summary' => "HotUserSwap allows quick swap between users in the site front end",
+			'author' => "Ben Byford",
+			'href' => "https://github.com/benbyford/PW-starter-modules",
+			'icon' => "share",
+			'autoload' => true,
+			'singular' => true,
+			'requires' => "ProcessWire>=2.5",
+		);
+	}
+
+	public function init() {
+
+		// add hook within class and point to custom function helloMessage
+		$this->addHookBefore("PageRender::renderPage", $this, "hotSwitch");
+		// $this->addHookBefore("Session::allowLogin", $this, "autoLogin");
+	}
+	public $allowed = false;
+
+	public function hotSwitch() {
+
+		// get page inputs
+		$inputUser = $this->input->get('hotSwitch');
+
+		// get new user
+		$newUser = $this->users->get($inputUser);
+
+		// get current user
+		$currentUser = $this->users->getCurrentUser();
+
+		// if input user then check if they allowed in and have permissions to hotswitch
+		if($inputUser != '' && $currentUser->name != $inputUser){
+			$this->session->logout();
+			$allowed = $this->session->allowLogin($inputUser);
+		}
+		if($currentUser->name == $inputUser){
+			$this->warning('You are already user: ' . $inputUser);
+		}
+
+		// if user allowed then logout current user and login new user
+		if($allowed){
+
+			$newPass = 'something';
+			$newUser->pass = $newPass;
+
+			$this->session->login($inputUser, $newPass);
+		}
+
+		$allUsers = $this->users;
+		$userNames = '';
+
+		foreach ($allUsers as $key => $userPage) {
+			if($newUser->name != $userPage->name){
+				$userNames .= ' <a href="'. $this->page->url .'?hotSwitch='.$userPage->name.'">' . $userPage->name . '</a>,';
+			}
+		}
+
+		if($this->page->template->name == 'admin'){
+			$this->message('Hi <b>'. $newUser->name .'</b>, hot switch user to:' . $userNames, Notice::allowMarkup);
+		}
+	}
+
+	// public function autoLogin($name){
+	// 	$this->message($name);
+	// }
+
+	public function ___install() {
+
+
+	}
+
+	public function ___uninstall() {
+
+	}
+
+	public function ___render() {
+		$allUsers = $this->users;
+		$currentUser = $this->users->getCurrentUser();
+		$userNames = '';
+
+		foreach ($allUsers as $userPage) {
+			if($currentUser->name != $userPage->name){
+				$userNames .= ' <a href="'. $this->page->url .'?hotSwitch='.$userPage->name.'">' . $userPage->name . '</a>';
+			}
+		}
+		if($allowed){
+			return "Your allowed in";
+		}else{
+			return "HELLO " . $currentUser->name . ' also there are:' . $userNames . $inputs;
+		}
+	}
+
+}
