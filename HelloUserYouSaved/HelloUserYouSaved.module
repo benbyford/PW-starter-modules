@@ -50,9 +50,4 @@ class HelloUserYouSaved extends WireData implements Module {
 		// alert will be shown after any admin page saved
 		$this->message("Hello {$this->user->name}! You saved {$page->name}.");
 	}
-
-	// install and uninstall unused here
-	public function ___install() {}
-
-	public function ___uninstall() {}
 }

@@ -15,4 +15,3 @@
     - how to set a user permission
     - how to install / uninstall something within your module
     - how to create a function that can be output in the frontend of your site.
- 
