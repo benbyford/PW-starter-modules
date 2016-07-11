@@ -5,6 +5,8 @@
  *
  * @author Ben Byford
  *
+ * Hookable functions: ___helloMessage
+ *
  * ProcessWire 2.x
  * Copyright (C) 2011 by Ryan Cramer
  * Licensed under GNU/GPL v2, see LICENSE.TXT
@@ -22,14 +24,12 @@ class HelloUserYouSaved extends WireData implements Module {
 			'version' => "0.0.1",
 			'summary' => "HelloUserYouSaved shows messages after actions in PW",
 			'author' => "Ben Byford",
-			'href' => "https://github.com/benbyford/PW-starter-modules",
+			'href' => "https://github.com/benbyford/PW-starter-modules/tree/master/HelloUserYouSaved",
 			'icon' => "bell",
 
 			// use autoload if module is to be called each load, if it is only needed to setup something set to false
 			'autoload' => true,
-
 			'singular' => false,
-
 			'requires' => "ProcessWire>=2.5",
 		);
 	}
@@ -46,16 +46,13 @@ class HelloUserYouSaved extends WireData implements Module {
 		// Get the soon to be saved page object from the given event
         $page = $event->arguments[0];
 
+		// use message() to send hello alert to PW
+		// alert will be shown after any admin page saved
 		$this->message("Hello {$this->user->name}! You saved {$page->name}.");
 	}
 
-	public function ___install() {
+	// install and uninstall unused here
+	public function ___install() {}
 
-
-	}
-
-	public function ___uninstall() {
-
-	}
-
+	public function ___uninstall() {}
 }

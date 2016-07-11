@@ -5,6 +5,8 @@
  *
  * @author Ben Byford
  *
+ * Hookable functions: ___renderPageRedirect
+ *
  * ProcessWire 2.x
  * Copyright (C) 2011 by Ryan Cramer
  * Licensed under GNU/GPL v2, see LICENSE.TXT
@@ -22,46 +24,54 @@ class RedirectAdminPages extends WireData implements Module {
 			'version' => "0.0.1",
 			'summary' => "Redirect specific user role to custom page",
 			'author' => "Ben Byford",
-			'href' => "https://github.com/benbyford/PW-starter-modules",
+			'href' => "https://github.com/benbyford/PW-starter-modules/tree/master/RedirectAdminPages",
 			'icon' => "user",
 
 			// use autoload if module is to be called each load, if it is only needed to setup something set to false
 			'autoload' => true,
 			'singular' => false,
-
 			'requires' => "ProcessWire>=2.5",
 		);
 	}
 
-	// called only if this is a autoload module
+	// the ready() called only if this module is autoload = true
 	public function ready(){
+
+		// add function hooked before all page renders
 		$this->addHookBefore("PageRender::renderPage", $this, "renderPageRedirect");
 	}
 
-	public function init() {
-
-	}
+	/*
+	* ___renderPageRedirect
+	*
+	* redirect user to page if current user role found in config
+	*/
+	public $redirect = false;
 
 	public function ___renderPageRedirect($event) {
 
-		//  check to see if admin page
+		//  check to see if current page = admin template page
 		if($this->page->template == "admin"){
 
-			$redirect = false;
-
-			// find roles set in module configuration
+			// find roles set in module configuration and create array
 			$roles = explode(',', $this->userRoles);
+
+			// for each user in module config check to see if current user
 			foreach ($roles as $key => $val) {
 				$roles[$key] = trim($roles[$key]);
 
+				// if current user found then redirect = true
 				if($this->user->hasRole($roles[$key])){
-					$redirect = true;
+
+					$this->redirect = true;
+
+					// stop user search
 					break;
 				}
 			}
 
 			// if role needs redirecting then redirect session
-			if($redirect){
+			if($this->redirect){
 				$this->session->redirect($this->redirectPage);
 			}
 		}
