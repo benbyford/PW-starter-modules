@@ -14,7 +14,7 @@
  *
  */
 
-class FrontEndRender extends Page implements Module {
+class FrontEndRender extends WireData implements Module {
 
 	public static function getModuleInfo() {
 		return array(
