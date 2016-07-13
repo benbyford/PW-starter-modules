@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * FrontEndRender
+ *
+ * Author: Ben Byford
+ *
+ * ProcessWire 2.x
+ * Copyright (C) 2010 by Ryan Cramer
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ *
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class FrontEndRender extends Page implements Module {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'FrontEndRender',
+			'version' => 0.1,
+			'summary' => "Outputs html and static variables to frontend",
+			'author' => 'Ben Byford',
+			'singular' => true,
+			'href' => 'https://github.com/benbyford/PW-starter-modules'
+		);
+	}
+
+	// protected variable only accessable within module
+	protected $name = 'Ben';
+
+	/*
+	* render function to be called in PW template like this:
+	* $FrontEndRender = $modules->getModule('FrontEndRender');
+	* echo '<h1>' . $FrontEndRender->render() . '</h1>';
+	*
+	*/
+	public function render(){
+		return "Hello " . $this->name;
+	}
+}
+?>
