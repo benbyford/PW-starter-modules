@@ -7,3 +7,5 @@
 
 - **FrontEndRender** - adds function callable in the site templates
     - Demos calling a function in the frontend
+
+[Also checkout My Processwire Intermediate modules](https://github.com/benbyford/PW-intermediate-modules)
